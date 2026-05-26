@@ -254,7 +254,7 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
     sections = parse_report_sections(report_text)
     
     # --- 第一大板块 ---
-    st.markdown('<div class="section-header-1">🎯 第一大板块：投资观点及依据</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header-1">🎯 投资观点及依据</div>', unsafe_allow_html=True)
     
     # 显示突出的投资观点卡片
     if view_text:
@@ -296,7 +296,7 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
     st.markdown("---")
     
     # --- 第二大板块 ---
-    st.markdown('<div class="section-header-2">⚠️ 第二大板块：主要风险</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header-2">⚠️ 主要风险</div>', unsafe_allow_html=True)
     
     for title, content in sections.items():
         if "主要风险" in title:
@@ -305,7 +305,7 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
     st.markdown("---")
     
     # --- 第三大板块 ---
-    st.markdown('<div class="section-header-3">🔮 第三大板块：未来展望</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header-3">🔮 未来展望</div>', unsafe_allow_html=True)
     
     for title, content in sections.items():
         if "未来展望" in title:
