@@ -29,7 +29,8 @@ with st.sidebar:
     if api_key and api_base:
         st.success("✅ 配置已就绪", icon="🔒")
     else:
-        st.error("❌ 配置不完整，请检查 .env 文件", icon="⚠️")
+        st.error("❌ 配置不完整，请检查环境变量设置", icon="⚠️")
+        st.info("💡 本地：检查 .env 文件 | 云端：检查应用 Secrets 配置")
     
     st.markdown("---")
     st.markdown("### 📖 使用说明")
@@ -41,7 +42,7 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("### 🔐 安全提示")
-    st.info("API Key 从本地 .env 文件读取，不会在界面上显示")
+    st.info("API Key 从环境变量读取，不会在界面上显示。")
 
 # 主界面
 col1, col2 = st.columns([3, 1])
@@ -60,7 +61,8 @@ if start_button and stock_code:
     api_base = os.getenv("OPENAI_API_BASE", "")
     
     if not api_key or not api_base:
-        st.error("❌ 配置不完整，请检查 .env 文件")
+        st.error("❌ 配置不完整，请检查环境变量设置")
+        st.info("💡 本地：检查 .env 文件 | 云端：检查应用 Secrets 配置")
     else:
         # 设置环境变量
         os.environ["OPENAI_API_KEY"] = api_key
