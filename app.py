@@ -174,6 +174,12 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
         view_text = "中性观望"
         view_type = "neutral"
     
+    # 解析报告章节
+    sections = parse_report_sections(report_text)
+    
+    # 第一大板块：投资观点及相关支撑证据
+    st.markdown('<div class="section-title">🎯 投资观点及支撑</div>', unsafe_allow_html=True)
+    
     # 显示突出的投资观点卡片
     if view_text:
         card_class = {
@@ -189,13 +195,9 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
                 <div class="view-title">{view_text}</div>
             </div>
         """, unsafe_allow_html=True)
-        
-        st.markdown("---")
+        st.markdown("")
     
-    # 解析报告章节
-    sections = parse_report_sections(report_text)
-    
-    # 左右两栏布局
+    # 左右两栏布局（数据 + 分析）
     col_left, col_right = st.columns([1, 1])
     
     with col_left:
@@ -206,25 +208,36 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col_right:
-        # 右侧：支撑证据和核心观察
+        # 右侧：核心观察与支撑证据
         st.markdown('<div class="section-title">📈 核心分析</div>', unsafe_allow_html=True)
         
         # 显示核心观察
         for title, content in sections.items():
-            if "核心观察" in title or "支撑证据" in title:
+            if "核心观察" in title:
+                st.markdown(title)
+                st.markdown(content)
+        
+        # 显示支撑证据
+        for title, content in sections.items():
+            if "支撑证据" in title:
                 st.markdown(title)
                 st.markdown(content)
     
     st.markdown("---")
     
-    # 显示风险和不确定性
+    # 第二大板块：主要风险
     for title, content in sections.items():
         if "主要风险" in title:
-            st.error(title)
-            st.markdown(content)
-        elif "不确定性边界" in title:
-            st.info(title)
-            st.markdown(content)
+            st.markdown('<div class="section-title">⚠️ 主要风险</div>', unsafe_allow_html=True)
+            st.error(content)
+    
+    st.markdown("---")
+    
+    # 第三大板块：未来展望
+    for title, content in sections.items():
+        if "未来展望" in title:
+            st.markdown('<div class="section-title">🔮 未来展望</div>', unsafe_allow_html=True)
+            st.info(content)
     
     st.markdown("---")
     
