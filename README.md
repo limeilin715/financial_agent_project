@@ -1,11 +1,11 @@
 # 📊 中国 A 股投资研究智能体
 
-一个基于 LangChain + Streamlit + AkShare 的智能 A 股投资研究系统。
+一个基于 LangChain + Streamlit + Baostock 的智能 A 股投资研究系统。
 
 ## ✨ 功能特点
 
-- 🤖 **AI 驱动分析**：支持 DeepSeek、GPT-4o 等多种大模型进行专业投资分析
-- 📈 **实时数据**：通过 AkShare 获取真实 A 股行情和财务数据
+- 🤖 **AI 驱动分析**：使用 DeepSeek 大模型进行专业投资分析
+- 📈 **实时数据**：通过 Baostock 获取真实 A 股行情和财务数据
 - 📰 **新闻舆情**：使用 DuckDuckGo 搜索相关市场新闻
 - 📋 **结构化报告**：生成标准化的投资研究报告
 - 🎨 **友好界面**：基于 Streamlit 的交互式 Web 应用
@@ -48,16 +48,14 @@ cp .env.example .env
 编辑 `.env` 文件：
 
 ```env
-OPENAI_API_KEY=your-real-api-key-here
-OPENAI_API_BASE=https://api.deepseek.com/v1
-MODEL_NAME=deepseek-chat
+OPENAI_API_KEY=your-real-deepseek-api-key-here
+OPENAI_API_BASE=https://api.deepseek.com
+MODEL_NAME=deepseek-v4-flash
 ```
 
-**支持的模型**：
-- `deepseek-chat`（默认，DeepSeek）
-- `gpt-4o`（OpenAI）
-- `gpt-4-turbo`（OpenAI）
-- `gpt-3.5-turbo`（OpenAI）
+**支持的 DeepSeek 模型**：
+- `deepseek-v4-flash`（默认，速度快）
+- `deepseek-v4-pro`（能力强，适合复杂分析）
 
 ### 3. 运行应用
 
@@ -69,41 +67,47 @@ streamlit run app.py
 
 ## 📝 使用说明
 
-1. 在侧边栏输入 OpenAI API Key
-2. 选择模型（默认 gpt-4o）
-3. 在主界面输入 A 股股票代码（如 600519）
-4. 点击"开始分析"按钮
-5. 等待智能体完成数据收集和分析
-6. 查看生成的投资研究报告
+1. 在侧边栏选择模型（默认 deepseek-v4-flash）
+2. 在主界面输入 A 股股票代码（如 600519）
+3. 点击"开始分析"按钮
+4. 等待智能体完成数据收集和分析
+5. 查看生成的投资研究报告
 
 ## 📋 报告结构
 
-生成的投资研究报告包含以下字段：
+生成的投资研究报告包含以下部分：
 
-| 字段 | 说明 |
+| 部分 | 说明 |
 |------|------|
-| `research_question` | 研究问题 |
-| `key_observations` | 核心观察点（至少 3 条）|
-| `supporting_evidence` | 支持性证据 |
-| `investment_view` | 投资观点（四选一）|
-| `major_risks` | 主要风险考量 |
-| `uncertainty_boundaries` | 不确定性边界 |
+| **投资观点** | 投资建议（四选一） |
+| **核心观察** | 关键分析点 |
+| **支撑证据** | 数据与分析依据 |
+| **主要风险** | 风险警示 |
+| **不确定性边界** | 边界条件说明 |
 
 ### 投资观点选项
 
-- 🟢 **强烈推荐买入**
-- 🟡 **谨慎看多**
-- ⚪ **中性观望**
-- 🔴 **建议规避**
+- 🟣 **强烈推荐买入**
+- 🟠 **谨慎看多**
+- 🔵 **中性观望**
+- 🟡 **建议规避**
+
+## 🎨 UI 布局
+
+- **顶部**：突出的投资观点卡片（渐变色）
+- **左侧**：财务与行情数据
+- **右侧**：核心观察与支撑证据
+- **中间**：主要风险（红色）、不确定性边界（蓝色）
+- **底部**：新闻舆情（可折叠展开）
 
 ## 🛠️ 技术栈
 
 - **Streamlit**：Web 应用框架
 - **LangChain**：AI 应用开发框架
-- **AkShare**：A 股数据接口
+- **Baostock**：A 股数据接口（稳定免费）
+- **AkShare**：A 股备用数据接口
 - **DuckDuckGo Search**：新闻搜索
-- **DeepSeek / OpenAI GPT**：大语言模型
-- **Pydantic**：数据验证
+- **DeepSeek**：大语言模型
 
 ## 📌 支持的股票市场
 
