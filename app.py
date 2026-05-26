@@ -8,6 +8,53 @@ load_dotenv()
 
 st.set_page_config(page_title="金融投资研究智能体", page_icon="📈", layout="wide")
 
+# 自定义CSS样式
+st.markdown("""
+<style>
+    .view-card-buy {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+    .view-card-watch {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+    }
+    .view-card-neutral {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+    }
+    .view-card-avoid {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        color: #333;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(250, 112, 154, 0.4);
+    }
+    .view-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .view-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("📊 中国A股投资研究智能体")
 st.markdown("---")
 
@@ -62,6 +109,52 @@ def is_valid_stock_code(code: str) -> bool:
     if code.startswith(('600', '601', '603', '605', '000', '001', '300', '301')):
         return True
     return False
+
+def parse_and_display_report(report_text: str, stock_code: str):
+    """解析并美化显示研究报告"""
+    
+    # 显示股票标题
+    st.markdown(f"## 📄 {stock_code} 投资研究报告")
+    st.markdown("---")
+    
+    # 从报告中提取投资观点
+    view_text = ""
+    view_type = "neutral"
+    
+    # 简单解析，找到投资观点部分
+    if "**强烈推荐买入**" in report_text:
+        view_text = "强烈推荐买入"
+        view_type = "buy"
+    elif "**谨慎看多**" in report_text:
+        view_text = "谨慎看多"
+        view_type = "watch"
+    elif "**建议规避**" in report_text:
+        view_text = "建议规避"
+        view_type = "avoid"
+    elif "**中性观望**" in report_text:
+        view_text = "中性观望"
+        view_type = "neutral"
+    
+    # 显示突出的投资观点卡片
+    if view_text:
+        card_class = {
+            "buy": "view-card-buy",
+            "watch": "view-card-watch",
+            "neutral": "view-card-neutral",
+            "avoid": "view-card-avoid"
+        }[view_type]
+        
+        st.markdown(f"""
+            <div class="{card_class}">
+                <div class="view-subtitle">💡 投资观点</div>
+                <div class="view-title">{view_text}</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+    
+    # 直接显示剩余报告内容
+    st.markdown(report_text)
 
 if start_button and stock_code:
     # 先验证股票代码格式
@@ -136,10 +229,9 @@ if start_button and stock_code:
                         st.text(news_data)
                 
                 st.markdown("---")
-                st.markdown(f"## 📄 {stock_code_clean} 投资研究报告")
                 
-                # 直接显示 Markdown 报告
-                st.markdown(report_text)
+                # 美化显示报告
+                parse_and_display_report(report_text, stock_code_clean)
                 
                 # 添加下载按钮
                 st.markdown("---")
