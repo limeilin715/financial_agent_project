@@ -62,12 +62,21 @@ def run_ashare_research(stock_code: str, financial_data: str = None, news_data: 
             print(f"正在获取 {stock_code} 的新闻与舆情...")
             news_data = search_ashare_market_news.invoke({"stock_code": stock_code})
         
+        # 获取环境变量并打印调试信息
+        model_name = os.getenv("MODEL_NAME", "deepseek-v4-flash")
+        api_key = os.getenv("OPENAI_API_KEY")
+        api_base = os.getenv("OPENAI_API_BASE", "https://api.deepseek.com")
+        
+        print(f"调试信息 - 模型: {model_name}")
+        print(f"调试信息 - API Base: {api_base}")
+        print(f"调试信息 - API Key 已配置: {api_key is not None and len(api_key) > 0}")
+        
         # 初始化大模型
         llm = ChatOpenAI(
-            model=os.getenv("MODEL_NAME", "deepseek-v4-flash"),
+            model=model_name,
             temperature=0.7,
-            api_key=os.getenv("OPENAI_API_KEY"),
-            base_url=os.getenv("OPENAI_API_BASE")
+            api_key=api_key,
+            base_url=api_base
         )
         
         # 构建分析提示词
@@ -96,7 +105,10 @@ def run_ashare_research(stock_code: str, financial_data: str = None, news_data: 
         return report_text
         
     except Exception as e:
-        raise Exception(f"投研分析失败：{str(e)}")
+        import traceback
+        error_msg = f"投研分析失败：{str(e)}\n\n详细堆栈：\n{traceback.format_exc()}"
+        print(error_msg)
+        raise Exception(error_msg)
 
 
 if __name__ == "__main__":
