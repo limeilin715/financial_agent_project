@@ -2,6 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 import concurrent.futures
+import re
 
 # 加载环境变量
 load_dotenv()
@@ -58,13 +59,50 @@ st.markdown("""
         border-radius: 10px;
         border-left: 5px solid #4facfe;
     }
-    .section-title {
-        font-size: 1.3rem;
+    .section-header-1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .section-header-2 {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .section-header-3 {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .subsection-title {
+        font-size: 1.1rem;
         font-weight: bold;
         color: #333;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #eee;
+        margin: 15px 0 10px 0;
+    }
+    .news-content {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    .news-link {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .news-link:hover {
+        text-decoration: underline;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -149,6 +187,47 @@ def parse_report_sections(report_text: str):
     
     return sections
 
+def parse_and_display_news(news_data: str):
+    """解析并美化显示新闻，提取链接"""
+    lines = news_data.split('\n')
+    
+    st.markdown('<div class="news-content">', unsafe_allow_html=True)
+    
+    current_title = ""
+    current_body = ""
+    current_link = ""
+    
+    for line in lines:
+        if line.startswith('📰 标题：'):
+            if current_title:
+                st.markdown(f"**{current_title}**")
+                st.markdown(current_body)
+                if current_link:
+                    st.markdown(f'<a href="{current_link}" target="_blank" class="news-link">🔗 查看原文</a>', unsafe_allow_html=True)
+                st.markdown("---")
+            current_title = line.replace('📰 标题：', '').strip()
+            current_body = ""
+            current_link = ""
+        elif line.startswith('📝 内容：'):
+            current_body = line.replace('📝 内容：', '').strip()
+        elif line.startswith('🔗 链接：'):
+            current_link = line.replace('🔗 链接：', '').strip()
+        elif line == '---':
+            continue
+        elif line.strip() and not line.startswith('🔍 【'):
+            if current_body:
+                current_body += " " + line.strip()
+            else:
+                st.markdown(line)
+    
+    if current_title:
+        st.markdown(f"**{current_title}**")
+        st.markdown(current_body)
+        if current_link:
+            st.markdown(f'<a href="{current_link}" target="_blank" class="news-link">🔗 查看原文</a>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
 def parse_and_display_report(report_text: str, stock_code: str, financial_data: str, news_data: str):
     """解析并美化显示研究报告"""
     
@@ -177,8 +256,8 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
     # 解析报告章节
     sections = parse_report_sections(report_text)
     
-    # 第一大板块：投资观点及相关支撑证据
-    st.markdown('<div class="section-title">🎯 投资观点及支撑</div>', unsafe_allow_html=True)
+    # --- 第一大板块 ---
+    st.markdown('<div class="section-header-1">🎯 第一大板块：投资观点及依据</div>', unsafe_allow_html=True)
     
     # 显示突出的投资观点卡片
     if view_text:
@@ -197,53 +276,51 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
         """, unsafe_allow_html=True)
         st.markdown("")
     
-    # 左右两栏布局（数据 + 分析）
+    # 左右两栏布局
     col_left, col_right = st.columns([1, 1])
     
     with col_left:
-        # 左侧：财务与行情数据
-        st.markdown('<div class="section-title">📊 财务与行情数据</div>', unsafe_allow_html=True)
+        # 左侧：1. 财务与行情数据
+        st.markdown('<div class="subsection-title">1️⃣ 财务与行情数据</div>', unsafe_allow_html=True)
         st.markdown('<div class="data-card">', unsafe_allow_html=True)
         st.text(financial_data)
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col_right:
-        # 右侧：核心观察与支撑证据
-        st.markdown('<div class="section-title">📈 核心分析</div>', unsafe_allow_html=True)
-        
-        # 显示核心观察
+        # 右侧：2. 核心观察，3. 支撑依据
         for title, content in sections.items():
             if "核心观察" in title:
-                st.markdown(title)
+                st.markdown('<div class="subsection-title">2️⃣ 核心观察</div>', unsafe_allow_html=True)
                 st.markdown(content)
         
-        # 显示支撑证据
         for title, content in sections.items():
             if "支撑证据" in title:
-                st.markdown(title)
+                st.markdown('<div class="subsection-title">3️⃣ 支撑依据</div>', unsafe_allow_html=True)
                 st.markdown(content)
     
     st.markdown("---")
     
-    # 第二大板块：主要风险
+    # --- 第二大板块 ---
+    st.markdown('<div class="section-header-2">⚠️ 第二大板块：主要风险</div>', unsafe_allow_html=True)
+    
     for title, content in sections.items():
         if "主要风险" in title:
-            st.markdown('<div class="section-title">⚠️ 主要风险</div>', unsafe_allow_html=True)
-            st.error(content)
+            st.markdown(content)
     
     st.markdown("---")
     
-    # 第三大板块：未来展望
+    # --- 第三大板块 ---
+    st.markdown('<div class="section-header-3">🔮 第三大板块：未来展望</div>', unsafe_allow_html=True)
+    
     for title, content in sections.items():
         if "未来展望" in title:
-            st.markdown('<div class="section-title">🔮 未来展望</div>', unsafe_allow_html=True)
-            st.info(content)
+            st.markdown(content)
     
     st.markdown("---")
     
     # 底部：新闻舆情（可折叠）
     with st.expander("📰 查看新闻与舆情（点击展开）", expanded=False):
-        st.markdown(news_data)
+        parse_and_display_news(news_data)
 
 if start_button and stock_code:
     # 先验证股票代码格式

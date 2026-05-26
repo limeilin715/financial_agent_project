@@ -297,7 +297,7 @@ def search_ashare_market_news(stock_code: str) -> str:
         stock_code: 股票代码，支持纯数字格式（如"600519")
     
     Returns:
-        近期前3条核心财经新闻文本
+        近期前3条核心财经新闻文本（含链接）
     """
     try:
         if not stock_code:
@@ -330,8 +330,9 @@ def search_ashare_market_news(stock_code: str) -> str:
                     for r in results:
                         title = r.get('title', '')
                         body = r.get('body', '')
+                        url = r.get('href', '')
                         
-                        news_item = f"📰 标题：{title}\n📝 内容：{body}\n---"
+                        news_item = f"📰 标题：{title}\n📝 内容：{body}\n🔗 链接：{url}\n---"
                         news_results.append(news_item)
                         
                         # 提前退出，减少搜索时间
