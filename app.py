@@ -13,78 +13,75 @@ st.set_page_config(page_title="金融投资研究智能体", page_icon="📈", l
 st.markdown("""
 <style>
     .view-card-buy {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-    }
-    .view-card-watch {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
-    }
-    .view-card-neutral {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
-    }
-    .view-card-avoid {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        color: #333;
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(250, 112, 154, 0.4);
-    }
-    .view-title {
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    .view-subtitle {
-        font-size: 1.2rem;
-        opacity: 0.95;
-    }
-    .data-card {
-        background: #f8f9fa;
+        background: #e8f5e9;
+        color: #2e7d32;
         padding: 20px;
         border-radius: 10px;
-        border-left: 5px solid #4facfe;
+        text-align: center;
+        border: 2px solid #4caf50;
+    }
+    .view-card-watch {
+        background: #fff3e0;
+        color: #e65100;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid #ff9800;
+    }
+    .view-card-neutral {
+        background: #e3f2fd;
+        color: #1565c0;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid #2196f3;
+    }
+    .view-card-avoid {
+        background: #ffebee;
+        color: #c62828;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid #f44336;
+    }
+    .view-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    .view-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
     }
     .section-header-1 {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        font-size: 1.4rem;
+        background: #f5f5f5;
+        color: #333;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 1.3rem;
         font-weight: bold;
         margin-bottom: 20px;
+        border-left: 5px solid #667eea;
     }
     .section-header-2 {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        font-size: 1.4rem;
+        background: #f5f5f5;
+        color: #333;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 1.3rem;
         font-weight: bold;
         margin-bottom: 20px;
+        border-left: 5px solid #ef5350;
     }
     .section-header-3 {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        font-size: 1.4rem;
+        background: #f5f5f5;
+        color: #333;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 1.3rem;
         font-weight: bold;
         margin-bottom: 20px;
+        border-left: 5px solid #42a5f5;
     }
     .subsection-title {
         font-size: 1.1rem;
@@ -97,7 +94,7 @@ st.markdown("""
         line-height: 1.6;
     }
     .news-link {
-        color: #667eea;
+        color: #1976d2;
         text-decoration: none;
         font-size: 0.9rem;
     }
@@ -282,9 +279,7 @@ def parse_and_display_report(report_text: str, stock_code: str, financial_data: 
     with col_left:
         # 左侧：1. 财务与行情数据
         st.markdown('<div class="subsection-title">1️⃣ 财务与行情数据</div>', unsafe_allow_html=True)
-        st.markdown('<div class="data-card">', unsafe_allow_html=True)
         st.text(financial_data)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col_right:
         # 右侧：2. 核心观察，3. 支撑依据
