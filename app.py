@@ -39,10 +39,6 @@ with st.sidebar:
     2. 点击开始分析
     3. 等待智能体生成研究报告
     """)
-    
-    st.markdown("---")
-    st.markdown("### 🔐 安全提示")
-    st.info("API Key 从环境变量读取，不会在界面上显示。")
 
 # 主界面
 col1, col2 = st.columns([3, 1])
