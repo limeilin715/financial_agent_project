@@ -17,8 +17,9 @@ with st.sidebar:
     
     model_name = st.selectbox(
         "选择模型",
-        ["deepseek-v4-flash", "deepseek-v4-pro", "deepseek-chat", "gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"],
-        index=0
+        ["deepseek-v4-flash", "deepseek-v4-pro"],
+        index=0,
+        help="Flash: 更快响应，Pro: 更强大能力"
     )
     
     # 检查配置是否完整
