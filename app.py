@@ -52,6 +52,20 @@ st.markdown("""
         font-size: 1.2rem;
         opacity: 0.95;
     }
+    .data-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #4facfe;
+    }
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -110,7 +124,32 @@ def is_valid_stock_code(code: str) -> bool:
         return True
     return False
 
-def parse_and_display_report(report_text: str, stock_code: str):
+def parse_report_sections(report_text: str):
+    """解析报告各个章节"""
+    sections = {}
+    
+    # 尝试按标题分割
+    lines = report_text.split('\n')
+    
+    current_section = ""
+    current_content = []
+    
+    for line in lines:
+        if line.startswith('###'):
+            if current_section:
+                sections[current_section] = '\n'.join(current_content)
+            current_section = line.strip()
+            current_content = []
+        else:
+            if current_section:
+                current_content.append(line)
+    
+    if current_section:
+        sections[current_section] = '\n'.join(current_content)
+    
+    return sections
+
+def parse_and_display_report(report_text: str, stock_code: str, financial_data: str, news_data: str):
     """解析并美化显示研究报告"""
     
     # 显示股票标题
@@ -153,8 +192,45 @@ def parse_and_display_report(report_text: str, stock_code: str):
         
         st.markdown("---")
     
-    # 直接显示剩余报告内容
-    st.markdown(report_text)
+    # 解析报告章节
+    sections = parse_report_sections(report_text)
+    
+    # 左右两栏布局
+    col_left, col_right = st.columns([1, 1])
+    
+    with col_left:
+        # 左侧：财务与行情数据
+        st.markdown('<div class="section-title">📊 财务与行情数据</div>', unsafe_allow_html=True)
+        st.markdown('<div class="data-card">', unsafe_allow_html=True)
+        st.text(financial_data)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col_right:
+        # 右侧：支撑证据和核心观察
+        st.markdown('<div class="section-title">📈 核心分析</div>', unsafe_allow_html=True)
+        
+        # 显示核心观察
+        for title, content in sections.items():
+            if "核心观察" in title or "支撑证据" in title:
+                st.markdown(title)
+                st.markdown(content)
+    
+    st.markdown("---")
+    
+    # 显示风险和不确定性
+    for title, content in sections.items():
+        if "主要风险" in title:
+            st.error(title)
+            st.markdown(content)
+        elif "不确定性边界" in title:
+            st.info(title)
+            st.markdown(content)
+    
+    st.markdown("---")
+    
+    # 底部：新闻舆情（可折叠）
+    with st.expander("📰 查看新闻与舆情（点击展开）", expanded=False):
+        st.markdown(news_data)
 
 if start_button and stock_code:
     # 先验证股票代码格式
@@ -218,20 +294,10 @@ if start_button and stock_code:
                     st.write("✅ 投资研究报告生成完成")
                     research_status.update(label="✅ 投资报告生成完成", state="complete", expanded=False)
                 
-                # 显示原始数据（可选折叠）
-                with st.expander("📊 查看原始数据"):
-                    col_a, col_b = st.columns(2)
-                    with col_a:
-                        st.subheader("财务与行情数据")
-                        st.text(financial_data)
-                    with col_b:
-                        st.subheader("新闻与舆情")
-                        st.text(news_data)
-                
                 st.markdown("---")
                 
                 # 美化显示报告
-                parse_and_display_report(report_text, stock_code_clean)
+                parse_and_display_report(report_text, stock_code_clean, financial_data, news_data)
                 
                 # 添加下载按钮
                 st.markdown("---")
